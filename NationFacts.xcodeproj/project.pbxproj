@@ -19,6 +19,8 @@
 		4E61A3062278539000955747 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61A3052278539000955747 /* Constants.swift */; };
 		4E61A308227854BC00955747 /* DebugLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61A307227854BC00955747 /* DebugLog.swift */; };
 		4E61A30A227854FC00955747 /* Foundation+Extenstions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61A309227854FC00955747 /* Foundation+Extenstions.swift */; };
+		4E61A30F227879B600955747 /* FactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61A30E227879B600955747 /* FactModel.swift */; };
+		4E61A31122787DF000955747 /* FactsQueryServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61A31022787DF000955747 /* FactsQueryServiceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +49,8 @@
 		4E61A3052278539000955747 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		4E61A307227854BC00955747 /* DebugLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLog.swift; sourceTree = "<group>"; };
 		4E61A309227854FC00955747 /* Foundation+Extenstions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Foundation+Extenstions.swift"; sourceTree = "<group>"; };
+		4E61A30E227879B600955747 /* FactModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactModel.swift; sourceTree = "<group>"; };
+		4E61A31022787DF000955747 /* FactsQueryServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactsQueryServiceTests.swift; sourceTree = "<group>"; };
 		5349DEB377E9FE63328B2885 /* Pods_NationFacts.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NationFacts.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CD98E810D67BF39B374CDEB /* Pods-NationFactsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NationFactsTests.release.xcconfig"; path = "Target Support Files/Pods-NationFactsTests/Pods-NationFactsTests.release.xcconfig"; sourceTree = "<group>"; };
 		9B1C4F6E735E9B0B9FF16700 /* Pods-NationFacts.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NationFacts.release.xcconfig"; path = "Target Support Files/Pods-NationFacts/Pods-NationFacts.release.xcconfig"; sourceTree = "<group>"; };
@@ -108,12 +112,13 @@
 		4E61A2D922780E6300955747 /* NationFacts */ = {
 			isa = PBXGroup;
 			children = (
-				4E61A3042278535F00955747 /* Utils */,
-				4E61A3012278522700955747 /* Configuration */,
 				4E61A2FB2278273200955747 /* AppDelegate */,
 				4E61A2FD227827E300955747 /* View */,
+				4E61A30D2278799E00955747 /* Model */,
 				4E61A2FE22784C0400955747 /* Networking */,
 				4E61A2FC2278278C00955747 /* SupportingFiles */,
+				4E61A3012278522700955747 /* Configuration */,
+				4E61A3042278535F00955747 /* Utils */,
 			);
 			path = NationFacts;
 			sourceTree = "<group>";
@@ -122,6 +127,7 @@
 			isa = PBXGroup;
 			children = (
 				4E61A2EF22780E6400955747 /* NationFactsTests.swift */,
+				4E61A31022787DF000955747 /* FactsQueryServiceTests.swift */,
 				4E61A2F122780E6400955747 /* Info.plist */,
 			);
 			path = NationFactsTests;
@@ -177,6 +183,14 @@
 				4E61A309227854FC00955747 /* Foundation+Extenstions.swift */,
 			);
 			name = Utils;
+			sourceTree = "<group>";
+		};
+		4E61A30D2278799E00955747 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				4E61A30E227879B600955747 /* FactModel.swift */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 		5C8E1FD80DB7582C6AD6EF18 /* Frameworks */ = {
@@ -356,6 +370,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				4E61A3062278539000955747 /* Constants.swift in Sources */,
+				4E61A30F227879B600955747 /* FactModel.swift in Sources */,
 				4E61A3032278526800955747 /* ConfigurationManager.swift in Sources */,
 				4E61A308227854BC00955747 /* DebugLog.swift in Sources */,
 				4E61A2DD22780E6300955747 /* ListViewController.swift in Sources */,
@@ -369,6 +384,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E61A31122787DF000955747 /* FactsQueryServiceTests.swift in Sources */,
 				4E61A2F022780E6400955747 /* NationFactsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

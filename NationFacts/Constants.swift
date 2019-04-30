@@ -9,19 +9,19 @@
 import Foundation
 
 struct Constants {
-  struct ErrorDomain {
+  enum ErrorDomain {
     static let invalidRequest = "Invalid Request"
     static let invalidData = "Invalid Data"
     static let serviceError = "Network Error"
   }
 
-  struct Status {
+  enum Status {
     static let success = 200
     static let invalidRequest = 400
     static let invalidResponse = 404
   }
 
-  struct ErrorMessage {
+  enum ErrorMessage {
     static let invalidRequest = "Request is invalid, Please verify the request."
     static let invalidData = "Response invalid, please try after some time."
     static let serviceError = "Network Service failed, please try after some time."

@@ -8,9 +8,13 @@
 
 import Foundation
 
+typealias FactsQuerySuccessHandler = (FactsData?) -> Void
+typealias FactsQueryFailureHandler = (NSError?) -> Void
+
 protocol FactsQueryProrocol {
-  func getFactsList(from urlEndPoint: String, success: @escaping (NSDictionary?) -> Void,
-                    failure: @escaping (NSError?) -> Void)
+
+  func getFactsList(from urlEndPoint: String, success: @escaping FactsQuerySuccessHandler,
+                    failure: @escaping FactsQueryFailureHandler)
 }
 
 class FactsQueryService: FactsQueryProrocol {
@@ -18,8 +22,8 @@ class FactsQueryService: FactsQueryProrocol {
   let defaultSession = URLSession(configuration: .default)
   var dataTask: URLSessionDataTask?
 
-  func getFactsList(from urlEndPoint: String, success: @escaping (NSDictionary?) -> Void,
-                    failure: @escaping (NSError?) -> Void) {
+  func getFactsList(from urlEndPoint: String, success: @escaping FactsQuerySuccessHandler,
+                    failure: @escaping FactsQueryFailureHandler) {
     // cancel existing tasks before starting new get facts task
     dataTask?.cancel()
 
@@ -40,20 +44,31 @@ class FactsQueryService: FactsQueryProrocol {
       // handle the response or error
       if let error = error {
         DebugLog.print("error: \(error)")
+        failure(error as NSError)
       } else if let data = data,
         let response = response as? HTTPURLResponse,
         response.statusCode == Constants.Status.success {
-        //Covert result value to String object
+        // Cast result value to Json String object
         let stringData = String(data: data, encoding: String.Encoding.isoLatin1)
         DebugLog.print("Json String Data: \(String(describing: stringData))")
-        //Convert to UTF8 data
+        // Make UTF8 data Json string
         guard let utfData = stringData?.data(using: String.Encoding.utf8) else {
           let error = NSError(domain: Constants.ErrorDomain.invalidData,
                               code: Constants.Status.invalidResponse, userInfo: nil)
           DebugLog.print(error)
           return
         }
-        DebugLog.print("Data from string: \(utfData)")
+        // Decode json data to FactsData model object
+        do {
+          let jsonDecoder = JSONDecoder()
+          var decodedFactsData = FactsData()
+          decodedFactsData = try jsonDecoder.decode(FactsData.self, from: utfData)
+          DebugLog.print("Decoded Facts Json: \(decodedFactsData)")
+          success(decodedFactsData)
+        } catch let error as NSError {
+          failure(error)
+          DebugLog.print("JSON Decoder error: \(error)")
+        }
       }
     }
     // start the task
