@@ -30,6 +30,7 @@ class ListViewModel: NSObject, CellImageDownloaderDelegate {
   let factsQueryService: FactsQueryProrocol
   let observables: ListViewModelObservables
   weak var delegate: ListImageDownloaderDelegate?
+  private var cellHeights: [IndexPath: CGFloat?] = [:]
 
   init(observables: ListViewModelObservables = ListViewModelObservables(),
        geoFactsService: FactsQueryProrocol = FactsQueryService()) {
@@ -235,5 +236,16 @@ extension ListViewModel: UITableViewDataSource {
     }
     cell.layoutIfNeeded()
     return cell
+  }
+
+  func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    cellHeights[indexPath] = cell.frame.height
+  }
+
+  func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+    if let height = cellHeights[indexPath] {
+      return height ?? UITableView.automaticDimension
+    }
+    return UITableView.automaticDimension
   }
 }
