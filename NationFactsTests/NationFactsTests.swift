@@ -12,15 +12,21 @@ import XCTest
 class NationFactsTests: XCTestCase {
   var listViewController: ListViewController!
 
-    override func setUp() {
-      super.setUp()
-      listViewController = ListViewController()
-    }
+  override func setUp() {
+    super.setUp()
+    listViewController = ListViewController()
+    listViewController.initBinding()
+  }
 
-    override func tearDown() {
-        super.tearDown()
-    }
+  override func tearDown() {
+    listViewController = nil
+    super.tearDown()
+  }
 
-    func testListViewController() {
-    }
+  func testListViewController() {
+    listViewController.observables.serviceError = NSError(domain: "Test Error", code: 401, userInfo: nil)
+    listViewController.showServiceFailedAlert()
+    let errorCode = listViewController.observables.serviceError
+    XCTAssert(errorCode?.code == 401, "Test Service Error")
+  }
 }

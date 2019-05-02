@@ -17,6 +17,10 @@ class ListViewController: UIViewController {
     return ListViewModel()
   }()
 
+  var observables: ListViewModelObservables {
+    return viewModel.observables
+  }
+
   lazy var tableView: UITableView = {
     let tableView = UITableView()
     tableView.delegate = self.viewModel
@@ -59,6 +63,78 @@ class ListViewController: UIViewController {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+
+    initView()
+    initBinding()
+    viewModel.start()
+  }
+
+  // MARK: - initialize methods
+
+  func initView() {
+    view.backgroundColor = .white
     tableView.tableFooterView = UIView()
+  }
+
+  //bind view model with observers to react on changes made by controller
+  func initBinding() {
+
+    observables.sectionViewModels.addObserver(fireNow: false) { [weak self] (_) in
+      self?.tableView.reloadData()
+    }
+
+    observables.title.addObserver { [weak self] (title) in
+      self?.titleLabel.text = title
+      self?.navigationItem.titleView = self?.titleLabel
+    }
+
+    observables.isTableViewHidden.addObserver { [weak self] (isHidden) in
+      self?.tableView.isHidden = isHidden
+    }
+
+    observables.isServiceFailed.addObserver { [weak self] (isServiceFailed) in
+      if isServiceFailed {
+        self?.showServiceFailedAlert()
+      }
+    }
+  }
+
+  deinit {
+    observables.sectionViewModels.removeObserver()
+    observables.title.removeObserver()
+    observables.isTableViewHidden.removeObserver()
+    observables.isServiceFailed.removeObserver()
+  }
+
+  // MARK: - Service failure alert
+
+  //Service failure alert
+  func showServiceFailedAlert() {
+
+    let error = self.observables.serviceError
+
+    var title = ""
+    var message = ""
+
+    switch error?.code {
+    case Constants.Status.invalidRequest:
+      title = Constants.ErrorDomain.invalidRequest
+      message = Constants.ErrorMessage.invalidRequest
+    case Constants.Status.invalidResponse:
+      title = Constants.ErrorDomain.invalidData
+      message = Constants.ErrorMessage.invalidData
+    default:
+      title = Constants.ErrorDomain.serviceError
+      message = Constants.ErrorMessage.serviceError
+    }
+
+    let alertController = UIAlertController(title: title,
+                                            message: message,
+                                            preferredStyle: .alert)
+    let okAction = UIAlertAction(title: Constants.okAlertText, style: .default)
+    alertController.addAction(okAction)
+    DispatchQueue.main.async {
+      self.present(alertController, animated: true, completion: nil)
+    }
   }
 }

@@ -47,6 +47,8 @@ class FactCell: UITableViewCell {
     return imageView
   }()
 
+  var viewModel: FactCellViewModel?
+
   // MARK: - Initialize - methods
 
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -65,16 +67,20 @@ class FactCell: UITableViewCell {
     super.prepareForReuse()
   }
 
-  private func setupInitialView() {
-    self.selectionStyle = .none
-  }
+  // MARK: - Setup methods
 
-  func setup() {
-    self.titleLabel.text = "Fact Title"
-    self.descriptionLabel.text = "Place holder text for the text description"
-    self.factImageView.image = #imageLiteral(resourceName: "placeholderImage")
+  func setup(viewModel: RowViewModel) {
+    guard let viewModel = viewModel as? FactCellViewModel else { return }
+    self.viewModel = viewModel
+    titleLabel.text = viewModel.title
+    descriptionLabel.text = viewModel.desc
+    factImageView.image = viewModel.image
 
     setNeedsLayout()
+  }
+
+  private func setupInitialView() {
+    self.selectionStyle = .none
   }
 
   // MARK: - Setup Constraints
@@ -83,7 +89,7 @@ class FactCell: UITableViewCell {
 
     let stackView = UIStackView(arrangedSubviews: [factImageView, titleLabel, descriptionLabel])
     stackView.axis = .vertical
-    stackView.distribution = .fillEqually
+    stackView.distribution = .fill
     stackView.alignment = .fill
     stackView.spacing = Constants.cellPadding
     stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -107,6 +113,7 @@ class FactCell: UITableViewCell {
     contentView.addConstraints(stackViewV)
 
     //Flexible height for description lablel
+    factImageView.setContentHuggingPriority(.defaultHigh, for: .vertical)
     descriptionLabel.setContentHuggingPriority(.defaultHigh, for: .vertical)
   }
 }
