@@ -4,6 +4,7 @@ workspace 'NationFacts'
 
 def shared_pods
 pod 'SwiftLint'
+pod 'MBProgressHUD', '~> 1.1.0'
 end
 
 target 'NationFacts' do

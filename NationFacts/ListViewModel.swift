@@ -14,6 +14,8 @@ import UIKit
 class ListViewModelObservables {
   //Observable  model objects for the Facts list changes
   let title = Observable<String>(value: Constants.loadingText)
+  let isRefreshing = Observable<Bool>(value: false)
+  let isLoading = Observable<Bool>(value: false)
   let isServiceFailed = Observable<Bool>(value: false)
   let isTableViewHidden = Observable<Bool>(value: false)
   let sectionViewModels = Observable<SectionViewModel>(value: SectionViewModel(rowViewModels: []))
@@ -31,26 +33,23 @@ class ListViewModel: NSObject {
   }
 
   func start() {
+    self.observables.isLoading.value = true
     observables.isServiceFailed.value = false
     observables.isTableViewHidden.value = true
     observables.title.value = Constants.loadingText
     factsQueryService.getFactsList(from: ConfigurationManager.shared.environment.urlEndPoint,
                                    success: { [weak self] (factsData) in
                                     self?.observables.isTableViewHidden.value = false
+                                    self?.observables.isLoading.value = false
 
                                     guard let factsData = factsData else {
                                       self?.observables.title.value = ""
                                       return
                                     }
-                                    if let title = factsData.title,
-                                      let rowCount = factsData.rows?.count {
-                                      self?.observables.title.value = title
-                                      if rowCount > 0 {
-                                        self?.buildViewModels(factsData: factsData)
-                                      }
-                                    }
+                                    self?.extractModelDataFrom(factsData: factsData)
       },
                                    failure: { [weak self] (error) in
+                                    self?.observables.isLoading.value = false
                                     if error != nil {
                                       self?.observables.isServiceFailed.value = true
                                       self?.observables.title.value = ""
@@ -60,7 +59,40 @@ class ListViewModel: NSObject {
     })
   }
 
+  func refreshJsonData() {
+    self.observables.isRefreshing.value = true
+    self.observables.isServiceFailed.value = false
+    factsQueryService.getFactsList(from: ConfigurationManager.shared.environment.urlEndPoint,
+                                   success: { [weak self] (factsData) in
+                                    self?.observables.isRefreshing.value = false
+
+                                    guard let factsData = factsData else {
+                                      return
+                                    }
+                                    self?.extractModelDataFrom(factsData: factsData)
+      },
+                                   failure: { [weak self] (error) in
+                                    self?.observables.isRefreshing.value = false
+                                    if error != nil {
+                                      self?.observables.isServiceFailed.value = true
+                                      self?.observables.serviceError = error
+                                      return
+                                    }
+    })
+  }
+
   // MARK: - Data source
+
+  // Validate fact data
+  func extractModelDataFrom(factsData: FactsData) {
+    if let title = factsData.title,
+      let rowCount = factsData.rows?.count {
+      self.observables.title.value = title
+      if rowCount > 0 {
+        self.buildViewModels(factsData: factsData)
+      }
+    }
+  }
 
   // Arrange the sections/row view model and caregorize by date
   func buildViewModels(factsData: FactsData) {

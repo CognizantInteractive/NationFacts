@@ -10,7 +10,9 @@ import UIKit
 
 struct Constants {
   static let loadingText = "Loading..."
+  static let loadingDescription = "Please wait"
   static let okAlertText = "Ok"
+  static let refreshText =  "Refreshing facts"
 
   static let defaultLines = 0
   static let imageRadius = CGFloat(3)

@@ -61,10 +61,13 @@ class ListViewController: UIViewController {
     return label
   }()
 
+  private var refreshControll = UIRefreshControl()
+
   override func viewDidLoad() {
     super.viewDidLoad()
 
     initView()
+    initRefreshController()
     initBinding()
     viewModel.start()
   }
@@ -97,6 +100,27 @@ class ListViewController: UIViewController {
         self?.showServiceFailedAlert()
       }
     }
+
+    observables.isRefreshing.addObserver { [weak self] (isRefreshing) in
+      if !isRefreshing {
+        self?.refreshControll.endRefreshing()
+      }
+    }
+
+    observables.isLoading.addObserver { [weak self] (isLoading) in
+      if isLoading {
+        self?.showIndicator(withTitle: Constants.loadingText, description: Constants.loadingDescription)
+      } else {
+        self?.hideIndicator()
+      }
+    }
+  }
+
+  func initRefreshController() {
+    refreshControll.tintColor = .green
+    refreshControll.attributedTitle = NSAttributedString(string: Constants.refreshText)
+    refreshControll.addTarget(self, action: #selector(refresh), for: UIControl.Event.valueChanged)
+    tableView.addSubview(self.refreshControll)
   }
 
   deinit {
@@ -104,6 +128,19 @@ class ListViewController: UIViewController {
     observables.title.removeObserver()
     observables.isTableViewHidden.removeObserver()
     observables.isServiceFailed.removeObserver()
+  }
+
+  // MARK: - refresh methods
+
+  @objc
+  func refresh() {
+    viewModel.refreshJsonData()
+  }
+
+  func endRefresh() {
+    DispatchQueue.main.async {
+      self.refreshControll.endRefreshing()
+    }
   }
 
   // MARK: - Service failure alert

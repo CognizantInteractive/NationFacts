@@ -29,4 +29,17 @@ class NationFactsTests: XCTestCase {
     let errorCode = listViewController.observables.serviceError
     XCTAssert(errorCode?.code == 401, "Test Service Error")
   }
+
+  func testRefreshFactsList() {
+    XCTAssertNotNil(listViewController.observables, "Observable not initailized")
+    XCTAssertNotNil(listViewController.viewModel, "View Model not initailized")
+    listViewController.refresh()
+    listViewController.endRefresh()
+    listViewController.observables.isServiceFailed.value = true
+  }
+
+  func testObservables() {
+    listViewController.observables.isLoading.value = true
+    XCTAssert(listViewController.observables.isLoading.value, "Observable test")
+  }
 }
