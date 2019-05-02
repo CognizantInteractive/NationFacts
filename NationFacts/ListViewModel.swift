@@ -22,9 +22,14 @@ class ListViewModelObservables {
   var serviceError: NSError?
 }
 
-class ListViewModel: NSObject {
+protocol ListImageDownloaderDelegate: class {
+  func reloadTableViewRows(at indexPaths: [IndexPath], with animation: UITableView.RowAnimation)
+}
+
+class ListViewModel: NSObject, CellImageDownloaderDelegate {
   let factsQueryService: FactsQueryProrocol
   let observables: ListViewModelObservables
+  weak var delegate: ListImageDownloaderDelegate?
 
   init(observables: ListViewModelObservables = ListViewModelObservables(),
        geoFactsService: FactsQueryProrocol = FactsQueryService()) {
@@ -126,10 +131,90 @@ class ListViewModel: NSObject {
   private func converToSectionViewModel(_ sectionTable: [RowViewModel]) -> SectionViewModel {
     return SectionViewModel(rowViewModels: sectionTable)
   }
+
+  // MARK: List Image downloader delegate method
+  func getImageFor(factCellViewModel: FactCellViewModel, at indexPath: IndexPath) {
+    ImageDownloadHelper.shared.getImage(factCellViewModel: factCellViewModel) { (image) in
+      if image != nil {
+        DispatchQueue.main.async {
+          DebugLog.print("Reload the table view")
+          self.delegate?.reloadTableViewRows(at: [indexPath], with: .none)
+        }
+      } else {
+        self.downloadImageFor(factCellViewModel: factCellViewModel, at: indexPath)
+      }
+    }
+  }
+
+  // MARK: Image laod/download methods
+  func downloadImageFor(factCellViewModel: FactCellViewModel, at indexPath: IndexPath) {
+    ImageDownloadHelper.shared.startDownload(factCellViewModel: factCellViewModel, at: indexPath) {
+      if ImageDownloadHelper.shared.downloader.isCancelled {
+        return
+      }
+      DispatchQueue.main.async {
+        let pendingOperations = ImageDownloadHelper.shared.pendingOperations
+        pendingOperations.downloadsInProgress.removeValue(forKey: indexPath)
+        self.delegate?.reloadTableViewRows(at: [indexPath], with: .none)
+      }
+    }
+  }
+
+  func loadImagesForVisibleCells(for tableView: UITableView) {
+    if let pathsArray = tableView.indexPathsForVisibleRows {
+      let allPendingOperations = Set(ImageDownloadHelper.shared.pendingOperations.downloadsInProgress.keys)
+
+      // list pending operations except for visible cells
+      var toBeCancelled = allPendingOperations
+      let visiblePaths = Set(pathsArray)
+      toBeCancelled.subtract(visiblePaths)
+
+      // list visible cell operation to be started
+      var toBeStarted = visiblePaths
+      toBeStarted.subtract(allPendingOperations)
+
+      //cancel to be cancelled operations
+      for indexPath in toBeCancelled {
+        if let pendingDownload = ImageDownloadHelper.shared.pendingOperations.downloadsInProgress[indexPath] {
+          pendingDownload.cancel()
+        }
+        ImageDownloadHelper.shared.pendingOperations.downloadsInProgress.removeValue(forKey: indexPath)
+      }
+
+      let sectionViewModel = observables.sectionViewModels.value
+
+      //get image and start operation if need for to be started index paths
+      for indexPath in toBeStarted {
+        let rowViewModel = sectionViewModel.rowViewModels[indexPath.row]
+        if let factCellViewModel = rowViewModel as? FactCellViewModel {
+          DebugLog.print("Visible row download")
+          getImageFor(factCellViewModel: factCellViewModel, at: indexPath)
+        }
+      }
+    }
+  }
 }
 
 extension ListViewModel: UITableViewDelegate {
+  // MARK: - scrollvoew delegate methods
+  func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    ImageDownloadHelper.shared.suspendAllOperations()
+  }
 
+  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    if !decelerate,
+      let tableView = scrollView as? UITableView {
+      loadImagesForVisibleCells(for: tableView)
+      ImageDownloadHelper.shared.resumeAllOperations()
+    }
+  }
+
+  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    if let tableView = scrollView as? UITableView {
+      loadImagesForVisibleCells(for: tableView)
+      ImageDownloadHelper.shared.resumeAllOperations()
+    }
+  }
 }
 
 extension ListViewModel: UITableViewDataSource {
@@ -144,7 +229,9 @@ extension ListViewModel: UITableViewDataSource {
 
     let cell = tableView.dequeueReusableCell(withIdentifier: FactCell.cellIdentifier(), for: indexPath)
     if let cell = cell as? FactCell {
-      cell.setup(viewModel: rowViewModel)
+      cell.delegate = self
+      let isNotScrolling = !tableView.isDragging && !tableView.isDecelerating
+      cell.setup(viewModel: rowViewModel, at: indexPath, forScrollingState: isNotScrolling)
     }
     cell.layoutIfNeeded()
     return cell

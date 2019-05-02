@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol CellImageDownloaderDelegate: class {
+  func getImageFor(factCellViewModel: FactCellViewModel, at indexPath: IndexPath)
+}
+
 class FactCell: UITableViewCell {
   //Facts title text
   lazy var titleLabel: UILabel = {
@@ -48,6 +52,7 @@ class FactCell: UITableViewCell {
   }()
 
   var viewModel: FactCellViewModel?
+  weak var delegate: CellImageDownloaderDelegate?
 
   // MARK: - Initialize - methods
 
@@ -69,12 +74,29 @@ class FactCell: UITableViewCell {
 
   // MARK: - Setup methods
 
-  func setup(viewModel: RowViewModel) {
+  func setup(viewModel: RowViewModel, at indexPath: IndexPath, forScrollingState isNotScrolling: Bool) {
     guard let viewModel = viewModel as? FactCellViewModel else { return }
     self.viewModel = viewModel
     titleLabel.text = viewModel.title
     descriptionLabel.text = viewModel.desc
     factImageView.image = viewModel.image
+
+    if accessoryView == nil {
+      let indicator = UIActivityIndicatorView(style: .gray)
+      accessoryView = indicator
+    }
+    var indicator: UIActivityIndicatorView?
+    indicator = accessoryView as? UIActivityIndicatorView
+
+    switch viewModel.imageState {
+    case .downloaded, .failed:
+      indicator?.stopAnimating()
+    case .new:
+      indicator?.startAnimating()
+      if isNotScrolling {
+        delegate?.getImageFor(factCellViewModel: viewModel, at: indexPath)
+      }
+    }
 
     setNeedsLayout()
   }

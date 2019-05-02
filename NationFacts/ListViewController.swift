@@ -11,7 +11,7 @@ import UIKit
 //
 // ListViewController to display the content (including image, title and description) in a table
 //
-class ListViewController: UIViewController {
+class ListViewController: UIViewController, ListImageDownloaderDelegate {
 
   lazy var viewModel: ListViewModel = {
     return ListViewModel()
@@ -76,6 +76,7 @@ class ListViewController: UIViewController {
 
   func initView() {
     view.backgroundColor = .white
+    viewModel.delegate = self
     tableView.tableFooterView = UIView()
   }
 
@@ -128,6 +129,14 @@ class ListViewController: UIViewController {
     observables.title.removeObserver()
     observables.isTableViewHidden.removeObserver()
     observables.isServiceFailed.removeObserver()
+  }
+
+  // MARK: - Image download delegate method
+
+  func reloadTableViewRows(at indexPaths: [IndexPath], with animation: UITableView.RowAnimation) {
+    DispatchQueue.main.async {
+      self.tableView.reloadRows(at: indexPaths, with: .none)
+    }
   }
 
   // MARK: - refresh methods

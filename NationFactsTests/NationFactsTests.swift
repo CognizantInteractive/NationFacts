@@ -30,6 +30,12 @@ class NationFactsTests: XCTestCase {
     XCTAssert(errorCode?.code == 401, "Test Service Error")
   }
 
+  func testLoadingFactsList() {
+    XCTAssertNotNil(listViewController.observables, "Observable not initailized")
+    XCTAssertNotNil(listViewController.viewModel, "View Model not initailized")
+    listViewController.viewModel.start()
+  }
+
   func testRefreshFactsList() {
     XCTAssertNotNil(listViewController.observables, "Observable not initailized")
     XCTAssertNotNil(listViewController.viewModel, "View Model not initailized")
@@ -41,5 +47,20 @@ class NationFactsTests: XCTestCase {
   func testObservables() {
     listViewController.observables.isLoading.value = true
     XCTAssert(listViewController.observables.isLoading.value, "Observable test")
+  }
+
+  func testPendingOperations() {
+    ImageDownloadHelper.shared.suspendAllOperations()
+    XCTAssert(ImageDownloadHelper.shared.pendingOperations.downloadQueue.isSuspended == true)
+    ImageDownloadHelper.shared.resumeAllOperations()
+    XCTAssert(ImageDownloadHelper.shared.pendingOperations.downloadQueue.isSuspended == false)
+  }
+
+  func testScrollView() {
+    let scrollView = listViewController.tableView
+    listViewController.viewModel.scrollViewWillBeginDragging(scrollView)
+    listViewController.viewModel.scrollViewDidEndDragging(scrollView, willDecelerate: false)
+    listViewController.viewModel.scrollViewDidEndDecelerating(scrollView)
+    XCTAssert(true, "Scroll view test")
   }
 }
