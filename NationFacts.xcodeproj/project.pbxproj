@@ -21,6 +21,10 @@
 		4E61A30A227854FC00955747 /* Foundation+Extenstions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61A309227854FC00955747 /* Foundation+Extenstions.swift */; };
 		4E61A30F227879B600955747 /* FactModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61A30E227879B600955747 /* FactModel.swift */; };
 		4E61A31122787DF000955747 /* FactsQueryServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61A31022787DF000955747 /* FactsQueryServiceTests.swift */; };
+		4E61A3132279875900955747 /* StyleManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61A3122279875900955747 /* StyleManager.swift */; };
+		4E61A3162279A57900955747 /* ListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61A3152279A57900955747 /* ListViewModel.swift */; };
+		4E61A3182279C1EB00955747 /* FactCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61A3172279C1EB00955747 /* FactCell.swift */; };
+		4E61A31A2279CA9E00955747 /* UIKit+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E61A3192279CA9E00955747 /* UIKit+Extensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +55,10 @@
 		4E61A309227854FC00955747 /* Foundation+Extenstions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Foundation+Extenstions.swift"; sourceTree = "<group>"; };
 		4E61A30E227879B600955747 /* FactModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactModel.swift; sourceTree = "<group>"; };
 		4E61A31022787DF000955747 /* FactsQueryServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactsQueryServiceTests.swift; sourceTree = "<group>"; };
+		4E61A3122279875900955747 /* StyleManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StyleManager.swift; sourceTree = "<group>"; };
+		4E61A3152279A57900955747 /* ListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListViewModel.swift; sourceTree = "<group>"; };
+		4E61A3172279C1EB00955747 /* FactCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FactCell.swift; sourceTree = "<group>"; };
+		4E61A3192279CA9E00955747 /* UIKit+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+Extensions.swift"; sourceTree = "<group>"; };
 		5349DEB377E9FE63328B2885 /* Pods_NationFacts.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NationFacts.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CD98E810D67BF39B374CDEB /* Pods-NationFactsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NationFactsTests.release.xcconfig"; path = "Target Support Files/Pods-NationFactsTests/Pods-NationFactsTests.release.xcconfig"; sourceTree = "<group>"; };
 		9B1C4F6E735E9B0B9FF16700 /* Pods-NationFacts.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NationFacts.release.xcconfig"; path = "Target Support Files/Pods-NationFacts/Pods-NationFacts.release.xcconfig"; sourceTree = "<group>"; };
@@ -115,6 +123,7 @@
 				4E61A2FB2278273200955747 /* AppDelegate */,
 				4E61A2FD227827E300955747 /* View */,
 				4E61A30D2278799E00955747 /* Model */,
+				4E61A3142279A55900955747 /* ViewModel */,
 				4E61A2FE22784C0400955747 /* Networking */,
 				4E61A2FC2278278C00955747 /* SupportingFiles */,
 				4E61A3012278522700955747 /* Configuration */,
@@ -155,6 +164,7 @@
 			isa = PBXGroup;
 			children = (
 				4E61A2DC22780E6300955747 /* ListViewController.swift */,
+				4E61A3172279C1EB00955747 /* FactCell.swift */,
 			);
 			name = View;
 			sourceTree = "<group>";
@@ -181,6 +191,8 @@
 				4E61A3052278539000955747 /* Constants.swift */,
 				4E61A307227854BC00955747 /* DebugLog.swift */,
 				4E61A309227854FC00955747 /* Foundation+Extenstions.swift */,
+				4E61A3122279875900955747 /* StyleManager.swift */,
+				4E61A3192279CA9E00955747 /* UIKit+Extensions.swift */,
 			);
 			name = Utils;
 			sourceTree = "<group>";
@@ -191,6 +203,14 @@
 				4E61A30E227879B600955747 /* FactModel.swift */,
 			);
 			name = Model;
+			sourceTree = "<group>";
+		};
+		4E61A3142279A55900955747 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+				4E61A3152279A57900955747 /* ListViewModel.swift */,
+			);
+			name = ViewModel;
 			sourceTree = "<group>";
 		};
 		5C8E1FD80DB7582C6AD6EF18 /* Frameworks */ = {
@@ -369,9 +389,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E61A3162279A57900955747 /* ListViewModel.swift in Sources */,
 				4E61A3062278539000955747 /* Constants.swift in Sources */,
+				4E61A31A2279CA9E00955747 /* UIKit+Extensions.swift in Sources */,
 				4E61A30F227879B600955747 /* FactModel.swift in Sources */,
+				4E61A3132279875900955747 /* StyleManager.swift in Sources */,
 				4E61A3032278526800955747 /* ConfigurationManager.swift in Sources */,
+				4E61A3182279C1EB00955747 /* FactCell.swift in Sources */,
 				4E61A308227854BC00955747 /* DebugLog.swift in Sources */,
 				4E61A2DD22780E6300955747 /* ListViewController.swift in Sources */,
 				4E61A30022784C7D00955747 /* FactsQueryService.swift in Sources */,

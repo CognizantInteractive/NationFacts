@@ -6,9 +6,16 @@
 //  Copyright © 2019 Lourdusamy, Sagaya Martin Luther King (Cognizant). All rights reserved.
 //
 
-import Foundation
+import UIKit
 
 struct Constants {
+  static let defaultLines = 0
+  static let imageRadius = CGFloat(3)
+
+  static let cellPadding = CGFloat(5)
+  static let estimatedRowHeight = CGFloat(120)
+  static let titleHeight = CGFloat(40)
+
   enum ErrorDomain {
     static let invalidRequest = "Invalid Request"
     static let invalidData = "Invalid Data"
@@ -25,5 +32,9 @@ struct Constants {
     static let invalidRequest = "Request is invalid, Please verify the request."
     static let invalidData = "Response invalid, please try after some time."
     static let serviceError = "Network Service failed, please try after some time."
+  }
+
+  enum DeviceType {
+    static let iPhone = "iPhone"
   }
 }
